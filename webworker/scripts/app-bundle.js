@@ -1,30 +1,59 @@
 define('worker',[], function () {
-  "use strict";
+    "use strict";
+
+    undefined.onmessage = function (e) {
+        if (e.data.doMath != undefined) {
+            for (var i = 0; i < 2000000000; i += .5) {}
+            var result = { result: e.data.doMath.num1 + e.data.doMath.num2 };
+            this.postMessage(result);
+        }
+    };
 });
-define('webworker',["exports"], function (exports) {
-        "use strict";
+define('webworker',['exports'], function (exports) {
+    'use strict';
 
-        Object.defineProperty(exports, "__esModule", {
-                value: true
-        });
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
 
-        function _classCallCheck(instance, Constructor) {
-                if (!(instance instanceof Constructor)) {
-                        throw new TypeError("Cannot call a class as a function");
-                }
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var webworker = exports.webworker = function () {
+        function webworker() {
+            _classCallCheck(this, webworker);
+
+            this.singleResult = '';
+            this.multiResult = 'Done!';
+            this.webEmployee = new Worker("./src/worker.js");
         }
 
-        var webworker = exports.webworker = function webworker() {
-                _classCallCheck(this, webworker);
+        webworker.prototype.multiPress = function multiPress() {
+            var messageToThread = { doMath: { num1: 1, num2: 3 } };
 
-                var webEmployee = new Worker("worker.js");
+            this.webEmployee.postMessage(messageToThread);
 
-                var messageToThread = { doMath: { num1: 1, num2: 3 } };
-
-                webEmployee.postMessage(messageToThread);
+            multiResultFont.style = "visibility: hidden";
+            this.webEmployee.onmessage = function (e) {
+                this.multiResult = "hello";
+                multiResultFont.style = "visibility: visible";
+            };
         };
+
+        webworker.prototype.singlePress = function singlePress() {
+            this.singleResult = '';
+            var test = this.multiResult;
+            for (var i = 0; i < 2000000000; i += .5) {}
+            this.singleResult = 'Done!';
+        };
+
+        return webworker;
+    }();
 });
-define('text!webworker.html', ['module'], function(module) { module.exports = "<template>\r\n    \r\n</template>"; });
+define('text!webworker.html', ['module'], function(module) { module.exports = "<template>\r\n    <div class=\"container\">\r\n    <div class=\"row justify-content-xs-center justify-content-sm-center justify-content-md-center\" >\r\n        <input type=\"text\"> </input>\r\n    </div>\r\n    <div class=\"row\">\r\n    <div class=\"col-md-6 col-sm-12\">\r\n        <h3>Press To Work on Single Thread</h3>\r\n        <button click.delegate=\"singlePress()\" class=\"btn btn-dark\">Run On Single</button>\r\n        <font color=\"green\" size=\"5.5\"><b>${singleResult}</b> </font>\r\n        <br/>\r\n        <font>Notice how to the UI freezes. Try to use the textbox.</font>\r\n    </div>\r\n    <div class=\"col-md-6 col-sm-12\">\r\n            <h3>Press To Work on Multi thread</h3>\r\n            <button click.delegate=\"multiPress()\" class=\"btn btn-dark\">Run On Multi</button>\r\n            <font color=\"green\" id=\"multiResultFont\" size=\"5.5\" style=\"visibility: hidden\"><b>${multiResult}</b> </font>\r\n            <br/>\r\n            <font>Notice how to the UI isn't frozen. Try to use the textbox.</font>\r\n        </div>\r\n    </div>\r\n</div>\r\n</template>"; });
 define('resources/index',["exports"], function (exports) {
   "use strict";
 
@@ -77,12 +106,13 @@ define('environment',["exports"], function (exports) {
     testing: true
   };
 });
-define('app',["exports"], function (exports) {
-  "use strict";
+define('app',['exports', 'bootstrap'], function (exports) {
+  'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
+  exports.App = undefined;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -105,5 +135,5 @@ define('app',["exports"], function (exports) {
     return App;
   }();
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template>\r\n  <h1>Welcome to the webworker demo app!</h1>\r\n  <router-view></router-view>\r\n</template>\r\n"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"bootstrap/css/bootstrap.css\"></require>\n  <h1>Welcome to the webworker demo app!</h1>\n  <router-view></router-view>\n</template>\n"; });
 //# sourceMappingURL=app-bundle.js.map

@@ -1,3 +1,23 @@
 <template>
-    
+    <div class="container">
+    <div class="row justify-content-xs-center justify-content-sm-center justify-content-md-center" >
+        <input type="text"> </input>
+    </div>
+    <div class="row">
+    <div class="col-md-6 col-sm-12">
+        <h3>Press To Work on Single Thread</h3>
+        <button click.delegate="singlePress()" class="btn btn-dark">Run On Single</button>
+        <font color="green" size="5.5"><b>${singleResult}</b> </font>
+        <br/>
+        <font>Notice how to the UI freezes. Try to use the textbox.</font>
+    </div>
+    <div class="col-md-6 col-sm-12">
+            <h3>Press To Work on Multi thread</h3>
+            <button click.delegate="multiPress()" class="btn btn-dark">Run On Multi</button>
+            <font color="green" id="multiResultFont" size="5.5" style="visibility: hidden"><b>${multiResult}</b> </font>
+            <br/>
+            <font>Notice how to the UI isn't frozen. Try to use the textbox.</font>
+        </div>
+    </div>
+</div>
 </template>
