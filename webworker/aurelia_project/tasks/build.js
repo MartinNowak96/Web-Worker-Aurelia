@@ -52,6 +52,7 @@ function copyToCordova() {
     '!typings',
     '!typings/**',
     '!src',
+    '!src/worker.js',
     '!src/**',
     '!test',
     '!test/**',
