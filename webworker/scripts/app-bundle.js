@@ -4,7 +4,8 @@ define('worker',[], function () {
     undefined.onmessage = function (e) {
         if (e.data.doMath != undefined) {
             for (var i = 0; i < 2000000000; i += .5) {}
-            var result = { result: e.data.doMath.num1 + e.data.doMath.num2 };
+
+            var result = { result: e.data.doMath + " Done" };
             this.postMessage(result);
         }
     };
@@ -29,17 +30,32 @@ define('webworker',['exports'], function (exports) {
             this.singleResult = '';
             this.multiResult = 'Done!';
             this.webEmployee = new Worker("./src/worker.js");
+            this.webEmployee2 = new Worker("./src/worker.js");
         }
 
         webworker.prototype.multiPress = function multiPress() {
-            var messageToThread = { doMath: { num1: 1, num2: 3 } };
 
-            this.webEmployee.postMessage(messageToThread);
+            this.webEmployee.postMessage({ doMath: "Process1" });
 
             multiResultFont.style = "visibility: hidden";
             this.webEmployee.onmessage = function (e) {
                 this.multiResult = "hello";
+                this.singleResult = "HELP";
+
                 multiResultFont.style = "visibility: visible";
+                processList.innerHTML = processList.innerHTML + "<li> Result:" + e.data.result + " </li>";
+            };
+        };
+
+        webworker.prototype.multiPress2 = function multiPress2() {
+
+            this.webEmployee2.postMessage({ doMath: "Process2" });
+
+            multiResultFont2.style = "visibility: hidden";
+            this.webEmployee2.onmessage = function (e) {
+                this.multiResult = "hello";
+                processList.innerHTML = processList.innerHTML + "<li> Result:" + e.data.result + " </li>";
+                multiResultFont2.style = "visibility: visible";
             };
         };
 
@@ -48,12 +64,13 @@ define('webworker',['exports'], function (exports) {
             var test = this.multiResult;
             for (var i = 0; i < 2000000000; i += .5) {}
             this.singleResult = 'Done!';
+            processList.innerHTML = processList.innerHTML + "<li> single thread finished </li>";
         };
 
         return webworker;
     }();
 });
-define('text!webworker.html', ['module'], function(module) { module.exports = "<template>\r\n    <div class=\"container\">\r\n    <div class=\"row justify-content-xs-center justify-content-sm-center justify-content-md-center\" >\r\n        <input type=\"text\"> </input>\r\n    </div>\r\n    <div class=\"row\">\r\n    <div class=\"col-md-6 col-sm-12\">\r\n        <h3>Press To Work on Single Thread</h3>\r\n        <button click.delegate=\"singlePress()\" class=\"btn btn-dark\">Run On Single</button>\r\n        <font color=\"green\" size=\"5.5\"><b>${singleResult}</b> </font>\r\n        <br/>\r\n        <font>Notice how to the UI freezes. Try to use the textbox.</font>\r\n    </div>\r\n    <div class=\"col-md-6 col-sm-12\">\r\n            <h3>Press To Work on Multi thread</h3>\r\n            <button click.delegate=\"multiPress()\" class=\"btn btn-dark\">Run On Multi</button>\r\n            <font color=\"green\" id=\"multiResultFont\" size=\"5.5\" style=\"visibility: hidden\"><b>${multiResult}</b> </font>\r\n            <br/>\r\n            <font>Notice how to the UI isn't frozen. Try to use the textbox.</font>\r\n        </div>\r\n    </div>\r\n</div>\r\n</template>"; });
+define('text!webworker.html', ['module'], function(module) { module.exports = "<template>\r\n    <div class=\"container\">\r\n    <div class=\"row justify-content-xs-center justify-content-sm-center justify-content-md-center\" >\r\n        <input type=\"text\"> </input>\r\n    </div>\r\n    <div class=\"row\">\r\n    <div class=\"col-md-6 col-sm-12\">\r\n        <h3>Press To Work on Single Thread</h3>\r\n        <button click.delegate=\"singlePress()\" class=\"btn btn-dark\">Run On Single</button>\r\n        <font color=\"green\" size=\"5.5\"><b>${singleResult}</b> </font>\r\n        <br/>\r\n        <font>Notice how to the UI freezes. Try to use the textbox.</font>\r\n    </div>\r\n    <div class=\"col-md-6 col-sm-12\">\r\n            <h3>Press To Work on Multi thread1</h3>\r\n            <button click.delegate=\"multiPress()\" class=\"btn btn-dark\">Run On Multi</button>\r\n            <font color=\"green\" id=\"multiResultFont\" size=\"5.5\" style=\"visibility: hidden\"><b>${multiResult}</b> </font>\r\n            <br/>\r\n            <font>Notice how to the UI isn't frozen. Try to use the textbox.</font>\r\n        </div>\r\n    \r\n\r\n    <div class=\"col-md-6 col-sm-12\">\r\n            <h3>Press To Work on Multi thread2</h3>\r\n            <button click.delegate=\"multiPress2()\" class=\"btn btn-dark\">Run On Multi</button>\r\n            <font color=\"green\" id=\"multiResultFont2\" size=\"5.5\" style=\"visibility: hidden\"><b>${multiResult}</b> </font>\r\n            <br/>\r\n            <font>Notice how to the UI isn't frozen. Try to use the textbox.</font>\r\n        </div>\r\n    </div>\r\n\r\n    <h5>Starting a new task on a messenger that is already running a task will cancel the first task</h5>\r\n    <h2>\r\n        Process List\r\n    </h2>\r\n    <ol id=\"processList\">\r\n\r\n    </ol>\r\n\r\n</div>\r\n\r\n</div>\r\n</template>"; });
 define('resources/index',["exports"], function (exports) {
   "use strict";
 
