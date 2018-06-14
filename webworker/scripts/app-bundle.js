@@ -2,10 +2,10 @@ define('worker',[], function () {
     "use strict";
 
     undefined.onmessage = function (e) {
-        if (e.data.doMath != undefined) {
+        if (e.data.process != undefined) {
             for (var i = 0; i < 2000000000; i += .5) {}
 
-            var result = { result: e.data.doMath + " Done" };
+            var result = { result: e.data.process.var1 + " Done" };
             this.postMessage(result);
         }
     };
@@ -35,26 +35,23 @@ define('webworker',['exports'], function (exports) {
 
         webworker.prototype.multiPress = function multiPress() {
 
-            this.webEmployee.postMessage({ doMath: "Process1" });
+            this.webEmployee.postMessage({ process: { var1: "Process1" } });
 
             multiResultFont.style = "visibility: hidden";
             this.webEmployee.onmessage = function (e) {
                 this.multiResult = "hello";
-                this.singleResult = "HELP";
-
                 multiResultFont.style = "visibility: visible";
-                processList.innerHTML = processList.innerHTML + "<li> Result:" + e.data.result + " </li>";
+                processList.innerHTML = processList.innerHTML + "<li> Result: " + e.data.result + " </li>";
             };
         };
 
         webworker.prototype.multiPress2 = function multiPress2() {
-
-            this.webEmployee2.postMessage({ doMath: "Process2" });
+            this.webEmployee2.postMessage({ process: { var1: "Process2" } });
 
             multiResultFont2.style = "visibility: hidden";
             this.webEmployee2.onmessage = function (e) {
                 this.multiResult = "hello";
-                processList.innerHTML = processList.innerHTML + "<li> Result:" + e.data.result + " </li>";
+                processList.innerHTML = processList.innerHTML + "<li> Result: " + e.data.result + " </li>";
                 multiResultFont2.style = "visibility: visible";
             };
         };
@@ -145,8 +142,6 @@ define('app',['exports', 'bootstrap'], function (exports) {
 
     function App() {
       _classCallCheck(this, App);
-
-      this.message = 'Hello World!';
     }
 
     return App;

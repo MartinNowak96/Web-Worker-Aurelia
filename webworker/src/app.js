@@ -6,6 +6,6 @@ export class App {
     config.map([{route: ['',"webworker"], name:"webworker", moduleId:"webworker", title:"Web Worker"}]);
   }
   constructor() {
-    this.message = 'Hello World!';
+
   }
 }
