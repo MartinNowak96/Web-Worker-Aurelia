@@ -7,7 +7,7 @@ export class webworker{
         //will get data by e.data.num1 and e.data.num1
 
         webEmployee.postMessage(messageToThread);//send the message to the thread
-        
+        //comment
 
 
 
