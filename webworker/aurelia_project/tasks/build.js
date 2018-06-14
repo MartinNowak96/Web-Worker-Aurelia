@@ -15,7 +15,8 @@ let build = gulp.series(
     processCSS,
     copyFiles
   ),
-  writeBundles
+  writeBundles,
+  copyToCordova
 );
 
 let main;
@@ -36,5 +37,30 @@ function readProjectConfiguration() {
 function writeBundles() {
   return buildCLI.dest();
 }
+
+function copyToCordova() {   
+  del(['../www/**/*'], {force:true});
+  return gulp.src([
+    '**/*',
+    '!node_modules',
+    '!node_modules/**',
+    '!aurelia_project',
+    '!aurelia_project/**',
+    '!custom_typings',
+    '!custom_typings/**',
+    '!typings',
+    '!typings/**',
+    '!src',
+    '!src/**',
+    '!test',
+    '!test/**',
+    '!*.js',    
+    '!*.json'
+
+    ])
+    .pipe(gulp.dest('../www'))
+  }
+
+
 
 export { main as default };
