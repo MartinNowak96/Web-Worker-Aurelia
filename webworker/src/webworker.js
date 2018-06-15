@@ -3,8 +3,12 @@ export class webworker{
 
         this.singleResult='';
         this.multiResult='Done!';
-        this.webEmployee = new Worker("./src/worker.js")//register worker
-        this.webEmployee2 = new Worker("./src/worker.js")//register worker
+        //var blob = new Blob(["self.onmessage = function(event) { postMessage(event.data); }"], {type: 'application/javascript'});  
+
+        //importScripts("./src/worker.js");
+        //this.webEmployee = new Worker(URL.createObjectURL(blob));//register worker
+        this.webEmployee = new Worker("worker/worker.js")//register worker
+        this.webEmployee2 = new Worker("worker/worker.js")//register worker
     }
 
     multiPress(){
@@ -13,7 +17,7 @@ export class webworker{
         
         multiResultFont.style = "visibility: hidden";
         this.webEmployee.onmessage = function(e){
-            this.multiResult ="hello";//this doesnt work
+            //this.multiResult ="hello";//this doesnt work
             //console.log("done")//this works
             multiResultFont.style ="visibility: visible";
             processList.innerHTML = processList.innerHTML +"<li> Result: "+e.data.result+" </li>";
@@ -29,7 +33,7 @@ export class webworker{
         
         multiResultFont2.style = "visibility: hidden";
         this.webEmployee2.onmessage = function(e){
-            this.multiResult ="hello";//this doesnt work
+            //this.multiResult ="hello";//this doesnt work
             //console.log("done")//this works
             //alert(e.data.result)//this works
             processList.innerHTML = processList.innerHTML +"<li> Result: "+e.data.result+" </li>";
@@ -44,7 +48,8 @@ export class webworker{
 
 
     singlePress(){
-        this.singleResult ='';
+      this.singleResult = '';
+        //alert("hello");
         let test = this.multiResult;
         for(let i =0; i< 2000000000; i+=.5){
 

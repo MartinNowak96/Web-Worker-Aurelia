@@ -44,6 +44,7 @@ function copyToCordova() {
   return gulp.src([
     '**/*',
     '!node_modules',
+    'worker/**',
     '!node_modules/**',
     '!aurelia_project',
     '!aurelia_project/**',
@@ -52,7 +53,6 @@ function copyToCordova() {
     '!typings',
     '!typings/**',
     '!src',
-    '!src/worker.js',
     '!src/**',
     '!test',
     '!test/**',
